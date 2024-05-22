@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 type Animal struct {
@@ -14,11 +15,12 @@ type Cage struct {
 }
 
 type Zookeeper struct {
-	Name string
+	Name  string
+	Cages []*Cage
 }
 
-func (z *Zookeeper) CollectAnimal(a *Animal, cages ...*Cage) {
-	for i, cage := range cages {
+func (z *Zookeeper) CollectAnimal(a *Animal)  {
+	for i, cage := range z.Cages {
 		if cage.Animal == nil {
 			cage.Animal = a
 			fmt.Printf("%s collected %s and put it in cage %d\n", z.Name, a.Name, i+1)
@@ -29,7 +31,7 @@ func (z *Zookeeper) CollectAnimal(a *Animal, cages ...*Cage) {
 }
 
 func main() {
-	rand.Seed(1)
+	rand.Seed(time.Now().UnixNano())
 
 	animal1 := Animal{Name: "Lion"}
 	animal2 := Animal{Name: "Tiger"}
@@ -37,13 +39,16 @@ func main() {
 	animal4 := Animal{Name: "Giraffe"}
 	animal5 := Animal{Name: "Zebra"}
 
-	cage1 := Cage{}
-	cage2 := Cage{}
-	cage3 := Cage{}
-	cage4 := Cage{}
-	cage5 := Cage{}
+	cage1 := &Cage{}
+	cage2 := &Cage{}
+	cage3 := &Cage{}
+	cage4 := &Cage{}
+	cage5 := &Cage{}
 
-	zookeeper := Zookeeper{Name: "John"}
+	zookeeper := Zookeeper{
+		Name: "John",
+	    Cages: []*Cage{cage1, cage2, cage3, cage4, cage5},
+	}
 
 	animals := []*Animal{&animal1, &animal2, &animal3, &animal4, &animal5}
 	escapedCount := rand.Intn(len(animals)) + 1
@@ -55,12 +60,11 @@ func main() {
 	}
 
 	for _, a := range escapedAnimals {
-		zookeeper.CollectAnimal(a, &cage1, &cage2, &cage3, &cage4, &cage5)
+		zookeeper.CollectAnimal(a)
 	}
 
 	fmt.Println("\nFinal state of cages:")
-	cages := []*Cage{&cage1, &cage2, &cage3, &cage4, &cage5}
-	for i, cage := range cages {
+	for i, cage := range zookeeper.Cages  {
 		if cage.Animal != nil {
 			fmt.Printf("Cage %d: %s\n", i+1, cage.Animal.Name)
 		} else {
