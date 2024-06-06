@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"time"
 )
 
 type Animal struct {
@@ -16,7 +15,7 @@ type Cage struct {
 
 type Zookeeper struct {
 	Name  string
-	Cages []*Cage
+	Cages []Cage
 }
 
 func (z *Zookeeper) CollectAnimal(a *Animal)  {
@@ -27,11 +26,11 @@ func (z *Zookeeper) CollectAnimal(a *Animal)  {
 			return
 		}
 	}
-	fmt.Printf("No empty cage found for %s\n", a.Name)
+	z.Cages = append(z.Cages, Cage{Animal: a})
+	// fmt.Printf("No empty cage found for %s\n", a.Name)
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
 
 	animal1 := Animal{Name: "Lion"}
 	animal2 := Animal{Name: "Tiger"}
@@ -39,15 +38,10 @@ func main() {
 	animal4 := Animal{Name: "Giraffe"}
 	animal5 := Animal{Name: "Zebra"}
 
-	cage1 := &Cage{}
-	cage2 := &Cage{}
-	cage3 := &Cage{}
-	cage4 := &Cage{}
-	cage5 := &Cage{}
 
 	zookeeper := Zookeeper{
 		Name: "John",
-	    Cages: []*Cage{cage1, cage2, cage3, cage4, cage5},
+	    Cages: []Cage{},
 	}
 
 	animals := []*Animal{&animal1, &animal2, &animal3, &animal4, &animal5}
